@@ -15,7 +15,7 @@
             <th class="topSideBox">
                 <input class="infoBox" type="text" name="teamBox" id="teamNumberBox" readonly />
             </th>
-            <th colspan="1" class="header" id="color" rowspan="1">Qual Form</th>
+            <th class="header" id="color" rowspan="1">Qual Form</th>
             <th class="topSideBox">
                 <input class="infoBox" type="text" name="matchBox" id="matchNumberBox" readonly />
             </th>
@@ -26,8 +26,11 @@
             <td></td>
         </tr>
         <tr>
-
+            <td colspan="3" rowspan="2">
+                <textarea placeholder="Actions" class="comments" id="autonActions"></textarea>
+            </td>
         </tr>
+        <tr></tr>
         <tr>
             <td>
                 <button class="backForth nextColor" id="back" onclick="load('index')">&larr;</button>

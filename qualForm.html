@@ -47,14 +47,14 @@
             <td colspan="3" class="subtitle">
                 Robustness (1 = broken, 5 = reliable):
                 <input class="infoBox" type="text" name="robustness" id="robustnessRating"
-                    oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
+                    oninput="this.value=this.value.replace(/[^0-9]/g,'')" onchange="addRating(this.id)" />
             </td>
         </tr>
         <tr>
             <td colspan="3" class="subtitle">
                 Performance (1 = not good, 5 = excellent):
                 <input class="infoBox" type="text" name="performance" id="performanceRating"
-                    oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
+                    oninput="this.value=this.value.replace(/[^0-9]/g,'')" onchange="addRating(this.id)" />
             </td>
         </tr>
         <tr>

@@ -36,33 +36,17 @@
                 correctLevel: QRCode.CorrectLevel.M,
             });
             document.getElementById('qrArea').style.width = qrSize + "px";
-            let unparsedActionList = sessionStorage.getItem("actionList");
             let unparsedExtradata = sessionStorage.getItem("extraData");
-            let unparsedCompressedList = sessionStorage.getItem("compressedList");
-            actionList = JSON.parse(unparsedActionList);
-            compressedList = JSON.parse(unparsedCompressedList);
             extraData = JSON.parse(unparsedExtradata);
-            var sums = Array(8).fill(0); //Compress List
-            for (const period of compressedList) {
-                sums[period[0]] += period[1];
-            }
 
             document.getElementById('teamNumberBox').value = extraData[0];
             document.getElementById('matchNumberBox').value = extraData[1];
-            var climb = getList("climbList");
-            var autonChecklist = getList("autonChecklist");
-            var defenseChecklist = getList("defenseChecklist");
-            var teleopComments = sessionStorage.getItem("teleopComments");
+            var autonActions = sessionStorage.getItem("autonActions");
+            var teleopActions = sessionStorage.getItem("teleopActions");
             var defenseComments = sessionStorage.getItem("defenseComments");
 
             if (defenseComments === "") {
                 defenseComments = "\n"; //CHANGE ME TO A SPACE IF THIS DOES NOT WORK
-            }
-            if (climb[0] === "noTry") {
-                climb[0] = "0";
-            }
-            if (climb[2] === "noTry") {
-                climb[2] = "0";
             }
 
             qrcode.clear();
@@ -75,13 +59,9 @@
                 "\t" +
                 extraData[4] +
                 "\t" +
-                sums.join(",") +
+                autonActions +
                 "\t" +
-                autonChecklist +
-                "\t" +
-                defenseChecklist +
-                "\t" +
-                teleopComments +
+                teleopActions +
                 "\t" +
                 defenseComments
             );

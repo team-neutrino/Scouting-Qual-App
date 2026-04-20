@@ -461,6 +461,14 @@ function addComments(id) {
   }
 }
 
+function addRating(id) {
+  if (id == "robustnessRating") {
+    robustnessRating = document.getElementById("robustnessRating").value || 0;
+  } else {
+    performanceRating = document.getElementById("performanceRating").value || 0;
+  }
+}
+
 function alliancePick(alliance) {
   extraData[4] = alliance;
   console.log(extraData);
@@ -505,30 +513,23 @@ function saveData() {
   sessionStorage.setItem("autonActions", autonActions);
   sessionStorage.setItem("teleopActions", teleopActions);
   sessionStorage.setItem("defenseComments", defenseComments);
+  sessionStorage.setItem("robustnessRating", robustnessRating.toString());
+  sessionStorage.setItem("performanceRating", performanceRating.toString());
 }
 
 function getData() {
-  score = parseInt(sessionStorage.getItem("score"), 10);
-  compressedList = getList("compressedList");
   extraData = getList("extraData");
-  climbList = getList("climbList");
-  autonChecklist = getList("autonChecklist");
-  defenseChecklist = getList("defenseChecklist");
-  teleopComments = sessionStorage.getItem("teleopComments");
+  autonActions = sessionStorage.getItem("autonActions");
+  teleopActions = sessionStorage.getItem("teleopActions");
   defenseComments = sessionStorage.getItem("defenseComments");
-  console.log(compressedList);
+  robustnessRating = parseInt(sessionStorage.getItem("robustnessRating"), 10);
+  performanceRating = parseInt(sessionStorage.getItem("performanceRating"), 10);
   console.log(extraData);
-  console.log(climbList);
-  console.log(autonChecklist);
-  console.log(defenseChecklist);
-  console.log(teleopComments);
+  console.log(autonActions)
+  console.log(teleopActions);
   console.log(defenseComments);
-  if (document.getElementById('teamLog1') !== null) {
-    updateLog();
-  }
-  if (document.getElementById('teamLog2') !== null) {
-    updateScore();
-  }
+  console.log(robustnessRating);
+  console.log(performanceRating);
 }
 
 function getList(name) {
@@ -538,9 +539,6 @@ function getList(name) {
 function loadPage(page) {
   getData();
   displayBoxData();
-  if (document.getElementById("teamLog2") !== null) {
-    document.getElementById("teamLog2").value = score;
-  }
 }
 
 function displayBoxData() {
@@ -550,123 +548,27 @@ function displayBoxData() {
   if (extraData[1] !== undefined) {
     document.getElementById('matchNumberBox').value = extraData[1];
   }
-  if (document.getElementById('Climb') !== null) {
-    for (var i = 0; i < autonChecklist.length; i++) {
-      if (autonChecklist[i] !== "") {
-        document.getElementById(autonChecklist[i]).checked = true;
-      }
-    }
+  if (document.getElementById('autonActions') !== null) {
+    document.getElementById('autonActions').value = autonActions;
   }
-  if (document.getElementById('Played Defense') !== null) {
-    for (var i = 0; i < defenseChecklist.length; i++) {
-      if (defenseChecklist[i] !== "") {
-        document.getElementById(defenseChecklist[i]).checked = true;
-      }
-    }
-  }
-  if (document.getElementById('teleopComments') !== null) {
-    document.getElementById('teleopComments').value = teleopComments;
+  if (document.getElementById('teleopActions') !== null) {
+    document.getElementById('teleopActions').value = teleopActions;
   }
   if (document.getElementById('defenseComments') !== null) {
     document.getElementById('defenseComments').value = defenseComments;
   }
-}
-
-function format(str, ...values) {
-  return str.replace(/{(\d+)}/g, function (match, index) {
-    return typeof values[index] !== 'undefined' ? values[index] : match;
-  });
-} // I like lua why can't js just have this by default : (
-
-function updateLog() {
-  // var logText = actionList.slice().reverse().join("\n");
-  // document.getElementById("teamLog1").value = logText;
-
-  if (document.getElementById("teamLog1") == null) {
-    return
+  if (document.getElementById('robustnessRating') !== null) {
+    document.getElementById('robustnessRating').value = robustnessRating;
   }
-
-  logText = ""
-
-  // console.log(compressedList.length)
-
-  for (let i = compressedList.length - 1; i >= 0; i--) {
-    period = compressedList[i];
-
-    if (period[3] || Date.now() - lastUpdatedTimestamp > TIMEOUT) { // if period finished
-      if (period[0] < 4) {
-        if (period[0] === 1 || period[0] === 3) {
-          logText = logText + "-- Passed " + period[1] + " fuel. --"
-        } else {
-          logText = logText + "-- Scored " + period[1] + " fuel. --"
-        }
-      } else {
-        if (period[0] === 5 || period[0] === 7) {
-          logText = logText + "-- Passed " + period[1] + " hoppers. --"
-        } else {
-          logText = logText + "-- Scored " + period[1] + " hoppers. --"
-        }
-      }
-
-      if (period[0] < 4) {
-        if (period[0] < 2) {
-          logText = logText + " (A)"
-        } else {
-          logText = logText + " (T)"
-        }
-      } else {
-        if (period[0] < 6) {
-          logText = logText + " (A)"
-        } else {
-          logText = logText + " (T)"
-        }
-      }
-
-      logText = logText + "\n";
-    }
-
-    score = period[1];
-
-    for (let i = period[2].length - 1; i >= 0; i--) {
-      amt = period[2][i];
-      if (period[0] < 4) {
-        logText = logText + format(idToLogText[period[0]], amt, score) + "\n";
-      } else {
-        logText = logText + format(idToLogText[period[0]], amt * 100) + "\n";
-      }
-      score -= amt;
-    }
+  if (document.getElementById('performanceRating') !== null) {
+    document.getElementById('performanceRating').value = performanceRating;
   }
-
-  document.getElementById("teamLog1").value = logText;
 }
 
 function commentEdit(comment) {
   extraData[3] = comment;
   saveData();
 }
-
-setInterval(updateLog, 1);
-
-// function Undo() {
-//   var lastAction = actionList.pop();
-
-//   if (lastAction) {
-//     document.getElementById('teamLog1').style.border = '3px solid red';
-//     setTimeout(() => {
-//       document.getElementById('teamLog1').style.border = '3px solid white';
-//       document.getElementById('teamLog1').style.transition = 'border 1s ease-in-out';
-//     }, 100);
-//     setTimeout(() => {
-//       document.getElementById('teamLog1').removeAttribute('style');
-//     }, 1100);
-//     compressedList.pop();
-//     updateLog();
-//     updateScore();
-//   } else {
-//     console.log("Nothing to undo");
-//   }
-// }
 
 function pullIPadID() {
   document.getElementById("iPadIDarea").value = localStorage.getItem("iPadId");
@@ -765,18 +667,6 @@ function load(windowLocation) {
     return
   }
   window.location.href = `./${windowLocation}.html`;
-}
-
-function qualLoad(windowLocation) {
-  teleopBox = document.getElementById("teleopComments");
-  defenseBox = document.getElementById("defenseComments");
-  if (teleopBox.value !== "") {
-    load(windowLocation);
-  } else {
-    if (teleopBox.value === "") {
-      borderColorChange(teleopBox, 1);
-    }
-  }
 }
 
 function borderColorChange(element, speed) {

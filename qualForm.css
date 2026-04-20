@@ -1,0 +1,29 @@
+table {
+    height: 200vh;
+    width: 100vw
+}
+
+tr {
+    height: 10%;
+}
+
+td {
+    color: white;
+    width: 12.5%;
+    font-size: 1.5em;
+}
+
+.title {
+    font-size: 5vh;
+}
+
+.subtitle {
+    font-size: 3vh;
+}
+
+.commentBox {
+    height: 90%;
+    width: 90%;
+    font-size: 3vh;
+    background-color: black;
+}

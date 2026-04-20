@@ -12,31 +12,57 @@
 <body class="qualFormBody" style="overflow: scroll;" onload="loadPage('qualForm')">
     <table id="table">
         <tr id="row1">
-            <th class="topSideBox">
+            <th class="topSideBox" colspan="2">
                 <input class="infoBox" type="text" name="teamBox" id="teamNumberBox" readonly />
             </th>
-            <th class="header" id="color" rowspan="1">Qual Form</th>
-            <th class="topSideBox">
+            <th class="header" id="color" colspan="2">Qual Form</th>
+            <th class="topSideBox" colspan="2">
                 <input class="infoBox" type="text" name="matchBox" id="matchNumberBox" readonly />
             </th>
         </tr>
         <tr>
-            <td></td>
-            <td id="autonActions">Auton Actions</td>
-            <td></td>
+            <td colspan="3" class="title">Auton Actions</td>
+            <td colspan="3" class="title">Teleop Actions</td>
         </tr>
         <tr>
             <td colspan="3" rowspan="2">
-                <textarea placeholder="Actions" class="comments" id="autonActions"></textarea>
+                <textarea placeholder="Actions" class="commentBox" id="autonActions"
+                    onchange="addComments(this.id)"></textarea>
+            </td>
+            <td colspan="3" rowspan="2">
+                <textarea placeholder="Actions" class="commentBox" id="teleopActions"
+                    onchange="addComments(this.id)"></textarea>
             </td>
         </tr>
         <tr></tr>
         <tr>
-            <td>
+            <td colspan="3" class="title">Defense</td>
+            <td colspan="3" class="title">Ratings</td>
+        </tr>
+        <tr>
+            <td colspan="3" rowspan="2">
+                <textarea placeholder="Comments" class="commentBox" id="defenseComments"
+                    onchange="addComments(this.id)"></textarea>
+            </td>
+            <td colspan="3" class="subtitle">
+                Robustness (1 = broken, 5 = reliable):
+                <input class="infoBox" type="text" name="robustness" id="robustnessRating"
+                    oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" class="subtitle">
+                Performance (1 = not good, 5 = excellent):
+                <input class="infoBox" type="text" name="performance" id="performanceRating"
+                    oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
                 <button class="backForth nextColor" id="back" onclick="load('index')">&larr;</button>
             </td>
-            <td></td>
-            <td>
+            <td colspan="2"></td>
+            <td colspan="2">
                 <button class="backForth nextColor" id="next" onclick="load('qr')">&rarr;</button>
             </td>
         </tr>

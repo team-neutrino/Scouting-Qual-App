@@ -1,13 +1,11 @@
 const pointList = [1, 4, 3]
 
 let extraData = []; //['teamNum', 'matchNum', 'scout', 'comment', 'alliance pick']
-var compressedList = []; //This is the list that collects all the IDs for the QR Code.
-var climbList = ["0", false, "0", false]; //['auton climb', auton backside, 'endgame climb', endgame backside]
-var autonChecklist = ["", "", "", "", "", ""];
-var defenseChecklist = ["", "", ""];
-var teleopComments = "";
+var autonActions = "";
+var teleopActions = "";
 var defenseComments = "";
-var comments = ""; //Comments Box
+var robustnessRating = 0;
+var performanceRating = 0;
 var blue1 = [8770,
   3055,
   5557,
@@ -440,9 +438,6 @@ var matchnum = 1;
 var team = "";
 var match = "";
 var savescout = sessionStorage.getItem("scoutInitials");
-let score = 0;
-
-const TIMEOUT = 1000 // time before fuel scoring period times out, measured in ms
 
 /* Function List
 --- Direct Button Functions ---
@@ -454,130 +449,21 @@ updateLog: Updates the human list of actions done.
 updateAvail: This was created to enable/disable (validation) scoring buttons based on how many game pieces the robot has.
 */
 
-function addAction(action, number) { //Used for buttons that have a data validation script
-  // compressedList.push(number); //Add it (NOT!) to the compressedList (QR Code)
-  if (document.getElementById('teamLog1') !== null) {
-    updateLog(); //Update what the scouter sees on the app
-    updateScore();
-  }
-  saveData();
-  console.log(compressedList);
-}
-
-function addAutonCheckbox(slot, action) {
-  if (autonChecklist[slot] === "") {
-    autonChecklist[slot] = action;
-  } else {
-    autonChecklist[slot] = "";
-  }
-}
-
-function addDefenseCheckbox(slot, action) {
-  if (defenseChecklist[slot] === "") {
-    defenseChecklist[slot] = action;
-  } else {
-    defenseChecklist[slot] = "";
-  }
-}
-
 function addComments(id) {
-  if (id == "teleopComments") {
-    teleopComments = document.getElementById("teleopComments").value;
-  } else {
+  if (id == "autonActions") {
+    autonActions = document.getElementById("autonActions").value;
+  }
+  else if (id == "teleopActions") {
+    teleopActions = document.getElementById("teleopActions").value;
+  }
+  else {
     defenseComments = document.getElementById("defenseComments").value;
   }
-}
-
-lastUpdatedTimestamp = 0
-
-function addFuel(type, amt) {
-  lastPosition = compressedList[compressedList.length - 1];
-
-  if (!lastPosition) {
-    compressedList.push([type, amt, [amt], false]);
-    lastUpdatedTimestamp = Date.now();
-    updateLog();
-    return;
-  };
-
-  lastType = lastPosition[0];
-  lastScore = lastPosition[1];
-  lastScoreTypes = lastPosition[2];
-
-  if (Date.now() - lastUpdatedTimestamp > TIMEOUT) {
-    lastPosition[3] = true;
-  }
-
-  if (type != lastType) {
-    lastPosition[3] = true;
-  }
-
-  finished = lastPosition[3];
-
-  if (!finished) {
-    compressedList[compressedList.length - 1][1] += amt;
-    compressedList[compressedList.length - 1][2].push(amt);
-  } else {
-    compressedList.push([type, amt, [amt], false]);
-  }
-
-  lastUpdatedTimestamp = Date.now();
-  updateLog();
-  updateScore();
-}
-
-function updateScore() {
-  var currentScore = 0
-  for (i = 0; i < compressedList.length; i++) {
-    if (compressedList[i][0] === 0 || compressedList[i][0] === 2) {
-      currentScore += compressedList[i][1];
-    }
-  }
-  score = currentScore;
-  document.getElementById("teamLog2").value = score;
-  console.log(score);
-}
-
-function updateScoreNoEditScreen() {
-  var currentScore = 0
-  for (i = 0; i < compressedList.length; i++) {
-    if (compressedList[i][0] === 0 || compressedList[i][0] === 2) {
-      currentScore += compressedList[i][1];
-    }
-  }
-  score = currentScore;
-  console.log(score);
 }
 
 function alliancePick(alliance) {
   extraData[4] = alliance;
   console.log(extraData);
-}
-
-function selectBackside(boxId, page) {
-  var backsideIndex = 3;
-  if (page === "autonClimb") {
-    backsideIndex = 1;
-  }
-  climbList[backsideIndex] = !climbList[backsideIndex]
-  if (climbList[backsideIndex]) {
-    document.getElementById(boxId).style.backgroundColor = "rgb(159, 221, 67)";
-  } else {
-    document.getElementById(boxId).style.backgroundColor = "rgb(227, 137, 20)";
-  }
-}
-
-function updateClimb(name, page) {
-  var climbIndex = 2;
-  if (page === "autonClimb") {
-    climbIndex = 0;
-  }
-
-  if (!(climbList[climbIndex] === "0")) {
-    document.getElementById(climbList[climbIndex]).style.backgroundColor = "#8ac3d5"; // get rid of old style
-  }
-  climbList[climbIndex] = name;
-  document.getElementById(climbList[climbIndex]).style.backgroundColor = "rgb(159, 221, 67)"; // add new style
 }
 
 function GO(iPadID, matchsaver, scoutsaver, page) {
@@ -615,13 +501,9 @@ function getBoxData() {
 }
 
 function saveData() {
-  sessionStorage.setItem("compressedList", JSON.stringify(compressedList));
   sessionStorage.setItem("extraData", JSON.stringify(extraData));
-  sessionStorage.setItem("score", score.toString());
-  sessionStorage.setItem("climbList", JSON.stringify(climbList));
-  sessionStorage.setItem("autonChecklist", JSON.stringify(autonChecklist));
-  sessionStorage.setItem("defenseChecklist", JSON.stringify(defenseChecklist));
-  sessionStorage.setItem("teleopComments", teleopComments);
+  sessionStorage.setItem("autonActions", autonActions);
+  sessionStorage.setItem("teleopActions", teleopActions);
   sessionStorage.setItem("defenseComments", defenseComments);
 }
 
@@ -659,20 +541,6 @@ function loadPage(page) {
   if (document.getElementById("teamLog2") !== null) {
     document.getElementById("teamLog2").value = score;
   }
-  if (page === 'autonClimb' || page === 'endgameClimb') {
-    loadClimb(page)
-  }
-}
-
-function loadClimb(page) {
-  var climbModifier = 2;
-  if (page === 'autonClimb') {
-    climbModifier = 0;
-  }
-  updateClimb(climbList[climbModifier], page);
-  if (climbList[1 + climbModifier] == true) {
-    document.getElementById("backsideButton").style.backgroundColor = "rgb(159, 221, 67)";
-  }
 }
 
 function displayBoxData() {
@@ -709,17 +577,6 @@ function format(str, ...values) {
     return typeof values[index] !== 'undefined' ? values[index] : match;
   });
 } // I like lua why can't js just have this by default : (
-
-idToLogText = {
-  0: "Scored {0} Fuel ({1} total) (A)",
-  1: "Passed {0} Fuel ({1} total) (A)",
-  2: "Scored {0} Fuel ({1} total) (T)",
-  3: "Passed {0} Fuel ({1} total) (T)",
-  4: "Scored {0}% of Hopper (A)",
-  5: "Passed {0}% of Hopper (A)",
-  6: "Scored {0}% of Hopper (T)",
-  7: "Passed {0}% of Hopper (T)",
-}
 
 function updateLog() {
   // var logText = actionList.slice().reverse().join("\n");
@@ -810,24 +667,6 @@ setInterval(updateLog, 1);
 //     console.log("Nothing to undo");
 //   }
 // }
-
-function Undo() {
-  lastPosition = compressedList[compressedList.length - 1];
-
-  if (lastPosition[2].length == 0) {
-    compressedList.pop();
-    Undo();
-    return;
-  }
-
-  if (lastPosition) {
-    lastScored = lastPosition[2].pop();
-    lastPosition[1] -= lastScored;
-  }
-
-  updateLog();
-  updateScore();
-}
 
 function pullIPadID() {
   document.getElementById("iPadIDarea").value = localStorage.getItem("iPadId");

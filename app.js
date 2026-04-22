@@ -698,7 +698,6 @@ function toQuotes() {
 
   }
   setTimeout(() => {
-    updateScoreNoEditScreen();
     insertQuote.innerHTML += "<br><br><strong>" + author + "</strong>";
     insertQuote.innerHTML += "<button onclick='loadIndex()' class='continuieButton' id='contineButton'>Continue</button>";
     insertQuote.innerHTML += "<strong>Score: " + score + "</strong>";
